@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>सामाजिक - नेपाली युनिकोडमा ट्विट लेख्नुहोस्</title>
+    <title>सामाजिक - नेपाली युनिकोडमा ट्विट र फेसबुक स्टेटस लेख्नुहोस्</title>
 
     <!-- Bootstrap Readable -->
     <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/yeti/bootstrap.min.css" rel="stylesheet">
@@ -19,15 +19,22 @@
   <body>
     <div class="container">
       <div class="page-header">
-       <h1>सामाजिक <small>नेपाली युनिकोडमा ट्विट लेख्नुहोस्</small></h1>
+       <h1>सामाजिक <small>नेपाली युनिकोडमा ट्विट र फेसबुक स्टेटस लेख्नुहोस्</small></h1>
 	  </div>
-	  <form class="form-horizontal" id="tweet">
+	  <form class="form-horizontal" id="post">
 		  <div class="form-group well well-lg">
 			  <div class="col-sm-12">
 			      <div class="input-group">
-				  <input type="text" class="form-control nepalify" id="txt" autofocus placeholder="यहाँ टाईप गरेर ट्विट बटन थिच्नुहोस्">
+					  <div class="input-group-btn">
+				          <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="ddown"> ट्विटर</span> <span class="caret"></span></button>
+				          <ul class="dropdown-menu" role="menu">
+				            <li class="active" id="twittersel"><a href="#">ट्विटर</a></li>
+				            <li id="facebooksel"><a href="#">फेसबुक</a></li>
+				          </ul>
+				        </div><!-- /btn-group -->
+				  <input type="text" class="form-control nepalify" id="txt" autofocus placeholder="यहाँ टाईप गर्नुहोस्">
 			        <span class="input-group-btn">
-					  <input class="btn btn-info" type="submit" value="ट्विट">
+					  <input class="btn btn-primary" id="sub" type="submit" value="ट्विट">
 			        </span>
 			      </div><!-- /input-group -->
 			  </div>
@@ -42,19 +49,59 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="nepalify.js"></script>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1572994792934218',
+          xfbml      : true,
+          version    : 'v2.1'
+        });
+      };
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+	
 	<script tpye="text/javascript">
 	$(function () {
-	  $('#tweet').submit(function(event) {
-		  var url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent($('#txt').val());
-		  var windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes', width = 550, height = 420, winHeight = screen.height, winWidth = screen.width;
-          left = Math.round((winWidth / 2) - (width / 2));
+	  $('#post').submit(function(event) {
+		  var txt = $('#txt').val();
+		  if ($('#twittersel').hasClass('active')) {
+			  var url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(txt);
+			  var windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes', width = 550, height = 420, winHeight = screen.height, winWidth = screen.width;
+		left = Math.round((winWidth / 2) - (width / 2));
           top = 0;
           if (winHeight > height) {
             top = Math.round((winHeight / 2) - (height / 2));
           }
           window.open(url, 'intent', windowOptions + ',width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
 		  event.preventDefault();
+	  } else {
+		  FB.login(function(){
+		   FB.api('/me/feed', 'post', {message: txt});
+		  }, {scope: 'publish_actions'});
+	  	
+	  }
+  });
+	  
+	  $('#facebooksel').click(function() {
+		  $('#ddown').html('फेसबुक');
+		  $('#twittersel').removeClass('active');
+		  $('#facebooksel').addClass('active');
+		  $('#sub').val('पोष्ट');
 	  });
+	  
+	  $('#twittersel').click(function() {
+		  $('#ddown').html('ट्विटर');
+		  $('#facebooksel').removeClass('active');
+		  $('#twittersel').addClass('active');
+		  $('#sub').val('ट्विट');
+	  });
+	  
 	});
 	</script>
 </body>
