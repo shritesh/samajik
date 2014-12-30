@@ -79,13 +79,13 @@
             top = Math.round((winHeight / 2) - (height / 2));
           }
           window.open(url, 'intent', windowOptions + ',width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
-		  event.preventDefault();
 	  } else {
 		  FB.login(function(){
 		   FB.api('/me/feed', 'post', {message: txt});
 		  }, {scope: 'publish_actions'});
 	  	
 	  }
+	  event.preventDefault();
   });
 	  
 	  $('#facebooksel').click(function() {
