@@ -40,6 +40,14 @@
 			  </div>
 		  </div>
 	  </form>
+	  <div class="col-sm-2 col-sm-offset-5">
+		  <div id="fblogin" class="hidden">
+		 	 <fb:login-button scope="publish_actions" size="large" onlogin="checkLoginState();">
+			 </fb:login-button>
+		 </div>
+  	</div>
+  	  <div class="clearfix">
+	  </div>
 	  <small><a href="https://twitter.com/shritesh">श्रितेश भट्टराई</a>बाट <a href="https://github.com/shritesh/samajik">स्वतन्त्र सफ्टवेयर</a><br>
 	  धन्यवाद: <a href="https://twitter.com/suvash">सुभाष थपलिया</a>को <a href="https://github.com/suvash/nepalify">नेपालीफाई</a></small>
 	</div>
@@ -50,12 +58,29 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="nepalify.js"></script>
     <script>
+    function statusChangeCallback(response) {
+      if (response.status === 'connected') {
+		  $('#fblogin').remove();
+      } 
+    }
+	
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+	
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '1572994792934218',
           xfbml      : true,
+          status      : true,
           version    : 'v2.1'
         });
+		FB.getLoginStatus(function(response) {
+		    statusChangeCallback(response);
+		  });
+		
       };
       (function(d, s, id){
          var js, fjs = d.getElementsByTagName(s)[0];
@@ -81,9 +106,9 @@
           window.open(url, 'intent', windowOptions + ',width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
 	  } else {
 		  FB.login(function(){
+		   $('#fblogin').remove();
 		   FB.api('/me/feed', 'post', {message: txt});
 		  }, {scope: 'publish_actions'});
-	  	
 	  }
 	  event.preventDefault();
   });
@@ -92,6 +117,7 @@
 		  $('#ddown').html('फेसबुक');
 		  $('#twittersel').removeClass('active');
 		  $('#facebooksel').addClass('active');
+		  $('#fblogin').removeClass('hidden');
 		  $('#sub').val('पोष्ट');
 	  });
 	  
@@ -99,6 +125,7 @@
 		  $('#ddown').html('ट्विटर');
 		  $('#facebooksel').removeClass('active');
 		  $('#twittersel').addClass('active');
+		  $('#fblogin').addClass('hidden');
 		  $('#sub').val('ट्विट');
 	  });
 	  
